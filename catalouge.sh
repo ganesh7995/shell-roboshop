@@ -56,7 +56,7 @@ unzip /tmp/catalogue.zip &>>$LOG_FILE
 VALIDATE $? "Unziping catalouge"
 
 npm install &>>$LOG_FILE
-VALIDATE $? "npm Installing"
+VALIDATE $? "Installing Dependicies"
 
 cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service
 VALIDATE $? "copying catalouge services"
@@ -68,6 +68,6 @@ systemctl enable catalogue &>>$LOG_FILE
 VALIDATE $? "Enabling Catalouge" 
 
 systemctl start catalogue &>>$LOG_FILE
-VALIDATE $? "Starting catalouge"
+VALIDATE $? "Starting Catalouge"
 
 mongosh --host mongodb.gana84s.site
