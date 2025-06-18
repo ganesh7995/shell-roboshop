@@ -2,7 +2,7 @@
 
 AMI_ID="ami-09c813fb71547fc4f"
 SG_ID="sg-0677980401ba4a8dd" # replace with your SG ID
-INSTANCES=("mongodb" "redis" "mysql" "rabbitmq" "catalogue" "user" "cart" "shipping" "payment" "dispatch" "frontend")
+INSTANCES=("mongodb" "redis" "dispatch" "frontend")
 ZONE_ID="Z06972962YER5TY40HSFX" # replace with your ZONE ID
 DOMAIN_NAME="gana84s.site" # replace with your domain
 
