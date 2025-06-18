@@ -22,31 +22,30 @@ else
 fi
 
 # validate functions takes input as exit status, what command they tried to install
-VALIDATE (){
-    if [ $? -eq 0 ]
+VALIDATE(){
+    if [ $1 -eq 0 ]
     then
-        echo -e "$S2 is ... $G SUCCESS $N" | tee -a $LOG_FILE
+        echo -e "$2 is ... $G SUCCESS $N" | tee -a $LOG_FILE
     else
-        echo -e "$S2 is .. $G FAILED $N" | tee -a $LOG_FILE
+        echo -e "$2 is ... $R FAILURE $N" | tee -a $LOG_FILE
         exit 1
     fi
 }
 
-cp mongo.repo /etc/yum.repos.d/mongo.repo
-VALIDATE $? "Copying Mongo repos"
+cp mongo.repo /etc/yum.repos.d/mongodb.repo
+VALIDATE $? "Copying MongoDB repo"
 
 dnf install mongodb-org -y &>>$LOG_FILE
-VALIDATE $? "Installing mongodb"
+VALIDATE $? "Installing mongodb server"
 
 systemctl enable mongod &>>$LOG_FILE
-VALIDATE $? "Enabling Mongodb"
+VALIDATE $? "Enabling MongoDB"
 
 systemctl start mongod &>>$LOG_FILE
 VALIDATE $? "Starting MongoDB"
 
-sed -i /127.0.0.1/0.0.0.0/g /etc/mongod.conf
-VALIDATE $? "Enabling remote Access"
+sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mongod.conf
+VALIDATE $? "Editing MongoDB conf file for remote connections"
 
 systemctl restart mongod &>>$LOG_FILE
-
-VALIDATE $? "MongoDB restarting"
+VALIDATE $? "Restarting MongoDB"
