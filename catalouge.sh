@@ -34,54 +34,53 @@ VALIDATE(){
 }
 
 dnf module disable nodejs -y &>>$LOG_FILE
-VALIDATE $? "Disabling NodeJs"
+VALIDATE $? "Disabling default nodejs"
 
 dnf module enable nodejs:20 -y &>>$LOG_FILE
-VALIDATE $? "Enabling NodeJs 20"
+VALIDATE $? "Enabling nodejs:20"
 
 dnf install nodejs -y &>>$LOG_FILE
-VALIDATE $? " Install Node Js 20"
+VALIDATE $? "Installing nodejs:20"
 
 id roboshop
-
 if [ $? -ne 0 ]
 then
-    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
-    VALIDATE $? " Creating roboshop user"
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
+    VALIDATE $? "Creating roboshop system user"
 else
-    echo -e "User already created $Y SKIPPING $N"
+    echo -e "System user roboshop already created ... $Y SKIPPING $N"
 fi
 
 mkdir -p /app 
-VALIDATE $? "Crating App Directory"
+VALIDATE $? "Creating app directory"
 
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$LOG_FILE
-VALIDATE $? "Downloading Catalouge"
+VALIDATE $? "Downloading Catalogue"
 
 rm -rf /app/*
 cd /app 
 unzip /tmp/catalogue.zip &>>$LOG_FILE
-VALIDATE $? "Unziping catalouge"
+VALIDATE $? "unzipping catalogue"
 
 npm install &>>$LOG_FILE
-VALIDATE $? "Installing Dependicies"
+VALIDATE $? "Installing Dependencies"
 
 cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service
-VALIDATE $? "copying catalouge services"
+VALIDATE $? "Copying catalogue service"
 
 systemctl daemon-reload &>>$LOG_FILE
-VALIDATE $? "Daemon reloading"
+systemctl enable catalogue  &>>$LOG_FILE
+systemctl start catalogue
+VALIDATE $? "Starting Catalogue"
 
-systemctl enable catalogue &>>$LOG_FILE
-VALIDATE $? "Enabling Catalouge" 
+cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo 
+dnf install mongodb-mongosh -y &>>$LOG_FILE
+VALIDATE $? "Installing MongoDB Client"
 
-systemctl start catalogue &>>$LOG_FILE
-VALIDATE $? "Starting Catalouge"
-
-STATUS=$(mongosh --host mongodb.gana84s.site --eval 'db.getmongo().getDBNames().indexof("catalouge")')
+STATUS=$(mongosh --host mongodb.daws84s.site --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
 if [ $STATUS -lt 0 ]
 then
-    mongosh --host mongodb.gana84s.site </app/db/master-data.js &>>$LOG_FILE
+    mongosh --host mongodb.daws84s.site </app/db/master-data.js &>>$LOG_FILE
     VALIDATE $? "Loading data into MongoDB"
 else
     echo -e "Data is already loaded ... $Y SKIPPING $N"
