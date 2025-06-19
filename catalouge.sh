@@ -58,6 +58,7 @@ VALIDATE $? "Crating App Directory"
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$LOG_FILE
 VALIDATE $? "Downloading Catalouge"
 
+rm -rf /app/*
 cd /app 
 unzip /tmp/catalogue.zip &>>$LOG_FILE
 VALIDATE $? "Unziping catalouge"
@@ -77,7 +78,10 @@ VALIDATE $? "Enabling Catalouge"
 systemctl start catalogue &>>$LOG_FILE
 VALIDATE $? "Starting Catalouge"
 
- mongosh --host mongodb.gana84s.site </app/db/master-data.js &>>$LOG_FILE
+STATUS=$(mongosh --host mongodb.gana84s.site --eval 'db.getmongo().getDBNames().indexof("catalouge")')
+if [ $STATUS -lt 0 ]
+then
+    mongosh --host mongodb.gana84s.site </app/db/master-data.js &>>$LOG_FILE
     VALIDATE $? "Loading data into MongoDB"
 else
     echo -e "Data is already loaded ... $Y SKIPPING $N"
