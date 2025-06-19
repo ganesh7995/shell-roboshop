@@ -77,4 +77,8 @@ VALIDATE $? "Enabling Catalouge"
 systemctl start catalogue &>>$LOG_FILE
 VALIDATE $? "Starting Catalouge"
 
-mongosh --host mongodb.gana84s.site
+ mongosh --host mongodb.gana84s.site </app/db/master-data.js &>>$LOG_FILE
+    VALIDATE $? "Loading data into MongoDB"
+else
+    echo -e "Data is already loaded ... $Y SKIPPING $N"
+fi
