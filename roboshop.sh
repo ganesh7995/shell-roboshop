@@ -2,7 +2,7 @@
 
 AMI_ID="ami-09c813fb71547fc4f"
 SG_ID="sg-0677980401ba4a8dd" # replace with your SG ID
-INSTANCES=("mongodb" "frontend")
+INSTANCES=("mongodb" "redis" "mysql" "rabbitmq" "catalogue" "user" "cart" "shipping" "payment" "dispatch" "frontend")
 ZONE_ID="Z06972962YER5TY40HSFX" # replace with your ZONE ID
 DOMAIN_NAME="gana84s.site" # replace with your domain
 
@@ -15,7 +15,7 @@ do
         IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query "Reservations[0].Instances[0].PrivateIpAddress" --output text)
         RECORD_NAME="$instance.$DOMAIN_NAME"
     else
-        IP=$(aws ec2 describe-instances --instance-id $INSTANCE_ID --query "Reservations[0].Instances[0].PublicIpAddress" --output text)
+        IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query "Reservations[0].Instances[0].PublicIpAddress" --output text)
         RECORD_NAME="$DOMAIN_NAME"
     fi
     echo "$instance IP address: $IP"
