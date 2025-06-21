@@ -24,7 +24,7 @@ else
 fi
 
 echo "Please enter your root password"
-read -s $MYSQL_ROOT_PASSWORD
+read -s MYSQL_ROOT_PASSWORD
 
 # validate functions takes input as exit status, what command they tried to install
 VALIDATE(){
