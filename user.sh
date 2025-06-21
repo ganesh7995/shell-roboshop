@@ -71,12 +71,12 @@ systemctl daemon-reload &>>$LOG_FILE
 VALIDATE $? "daemon reloading"
 
 systemctl enable user &>>$LOG_FILE
-VALIDATE $? "Enabling User"
+
 systemctl start user &>>$LOG_FILE
 VALIDATE $? "Starting user"
 
 END_TIME=$(date+%S)
 
-TOTAL_TIME=$($END_TIME - $START_TIME)
+TOTAL_TIME=$(($END_TIME - $START_TIME))
 
 echo -e "Script execution completed, $Y tame taken:$TOTAL_TIME $N" &>>$LOG_FILE
