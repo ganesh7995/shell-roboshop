@@ -68,7 +68,6 @@ npm install &>>$LOG_FILE
 VALIDATE $? "Installing npm"
 
 systemctl daemon-reload &>>$LOG_FILE
-VALIDATE $? "daemon reloading"
 
 systemctl enable user &>>$LOG_FILE
 
