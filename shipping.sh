@@ -23,7 +23,7 @@ else
     echo "You are running with root access" | tee -a $LOG_FILE
 fi
 
-echo "Please enter your password"
+echo "Please enter your root password"
 read -s $MYSQL_ROOT_PASSWORD
 
 # validate functions takes input as exit status, what command they tried to install
@@ -37,10 +37,10 @@ VALIDATE(){
     fi
 }
 
-dnf install maven -y $>>$LOG_FILE
+dnf install maven -y &>>$LOG_FILE
 VALIDATE $? "Installing Maven"
 
-id roboshop
+id roboshop &>>$LOG_FILE
 if [ $? -ne 0 ]
 then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
@@ -58,7 +58,7 @@ VALIDATE $? "Downloading Shipping"
 
 rm -rf /app/*
 cd /app 
-unzip /tmp/shipping.zip $>>$LOG_FILE
+unzip /tmp/shipping.zip &>>$LOG_FILE
 VALIDATE $? "Unzipping shipping"
 
 mvn clean package 
@@ -67,15 +67,15 @@ VALIDATE $? "packing the shoipping Aplication"
 mv target/shipping-1.0.jar shipping.jar
 VALIDATE $? "mooving and remnaming the content"
 
-systemctl daemon-reload $>>$LOG_FILE
+systemctl daemon-reload &>>$LOG_FILE
 VALIDATE $? "Daemon reload"
 
-systemctl enable shipping $>>$LOG_FILE
+systemctl enable shipping &>>$LOG_FILE
 VALIDATE $? "enavling Shipping"
-systemctl start shipping $>>$LOG_FILE
+systemctl start shipping &>>$LOG_FILE
 VALIDATE $? "stating shipping"
 
-dnf install mysql -y $>>$LOG_FILE
+dnf install mysql -y &>>$LOG_FILE
 VALIDATE $? "Installing mysql"
 
 mysql -h mysql.gana84s.site -u root $MYSQL_ROOT_PASSWORD -e 'use cties'
@@ -88,7 +88,7 @@ then
 else
     echo -e "data already loaded... $Y SKIPPING $N"
 
-systemctl restart shipping $>>$LOG_FILE
+systemctl restart shipping &>>$LOG_FILE
 VALIDATE $? "Restarting the shipping"
 
 END_TIME=$(date +%s)
