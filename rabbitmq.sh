@@ -23,8 +23,8 @@ else
     echo "You are running with root access" | tee -a $LOG_FILE
 fi
 
-echo "enter rabbitmq root password"
-read -s RABBITMQ_PASSWORD
+echo "Please enter rabbitmq password to setup"
+read -s RABBITMQ_PASSWD
 
 # validate functions takes input as exit status, what command they tried to install
 VALIDATE(){
@@ -37,6 +37,9 @@ VALIDATE(){
     fi
 }
 
+cp $SCRIPT_DIR/rabbitmq.repo /etc/yum.repos.d/rabbitmq.repo
+VALIDATE $? "Adding RabbitMQ Repos"
+
 dnf install rabbitmq-server -y &>>$LOG_FILE
 VALIDATE $? "Installing RabbitMQ"
 
@@ -45,7 +48,7 @@ VALIDATE $? "Enabling RabbitMQ"
 systemctl start rabbitmq-server &>>$LOG_FILE
 VALIDATE $? "Starting RabbitMQ"
 
-rabbitmqctl add_user roboshop $RABBITMQ_PASSWORD  &>>$LOG_FILE  
+rabbitmqctl add_user roboshop $RABBITMQ_PASSWD  &>>$LOG_FILE  
 rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*"
 
 END_TIME=$(date +%S)
