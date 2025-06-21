@@ -78,4 +78,4 @@ VALIDATE $? "Starting user"
 END_TIME=$(date +%S)
 
 TOTAL_TIME=$(($END_TIME - $START_TIME))
-echo -e "Script execution completed, $Y tame taken:$TOTAL_TIME seconds $N" &>>$LOG_FILE
+echo -e "Script execution completed, $Y tame taken:$TOTAL_TIME seconds $N" | tee -a $LOG_FILE
