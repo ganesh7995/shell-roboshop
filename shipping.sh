@@ -58,22 +58,23 @@ VALIDATE $? "Downloading Shipping"
 
 rm -rf /app/*
 cd /app 
-unzip /tmp/shipping.zip 
+unzip /tmp/shipping.zip &>>$LOG_FILE
 VALIDATE $? "Unzipping shipping"
 
-mvn clean package 
+mvn clean package &>>$LOG_FILE
 VALIDATE $? "packing the shoipping Aplication"
 
-mv target/shipping-1.0.jar shipping.jar
+mv target/shipping-1.0.jar shipping.jar &>>$LOG_FILE
 VALIDATE $? "mooving and remnaming the content"
+
+cp $SCRIPT_DIR/shipping.service /etc/systemd/system/shipping.service
 
 systemctl daemon-reload &>>$LOG_FILE
 VALIDATE $? "Daemon reload"
 
-cp $SCRIPT_DIR/shipping.service /etc/systemd/system/shipping.service
-
 systemctl enable shipping &>>$LOG_FILE
-VALIDATE $? "enavling Shipping"
+VALIDATE $? "enabling Shipping"
+
 systemctl start shipping &>>$LOG_FILE
 VALIDATE $? "stating shipping"
 
@@ -84,9 +85,9 @@ mysql -h mysql.gana84s.site -u root p$MYSQL_ROOT_PASSWORD -e 'use cties' &>>$LOG
 
 if [ $? -ne 0 ]
 then
-    mysql -h mysql.gana84s.site -uroot p$MYSQL_ROOT_PASSWORD < /app/db/schema.sql
-    mysql -h mysql.gana84s.site -uroot p$MYSQL_ROOT_PASSWORD < /app/db/app-user.sql 
-    mysql -h mysql.gana84s.site -uroot p$MYSQL_ROOT_PASSWORD < /app/db/master-data.sql
+    mysql -h mysql.gana84s.site -uroot p$MYSQL_ROOT_PASSWORD < /app/db/schema.sql &>>$LOG_FILE
+    mysql -h mysql.gana84s.site -uroot p$MYSQL_ROOT_PASSWORD < /app/db/app-user.sql &>>$LOG_FILE
+    mysql -h mysql.gana84s.site -uroot p$MYSQL_ROOT_PASSWORD < /app/db/master-data.sql &>>$LOG_FILE
     VALIDATE $? "Data loading into Mysql"
 else
     echo -e "data already loaded... $Y SKIPPING $N"
