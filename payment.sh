@@ -35,7 +35,7 @@ VALIDATE(){
 }
 
 dnf install python3 gcc python3-devel -y &>>$LOG_FILE
-VALIDATE $? "Installing Python3"
+VALIDATE $? "Install Python3 packages"
 
 id roboshop &>>$LOG_FILE
 if [ $? -ne 0 ]
@@ -43,35 +43,36 @@ then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
     VALIDATE $? "Creating roboshop system user"
 else
-    echo -e "User already exist $Y SKIPPING $N"
+    echo -e "System user roboshop already created ... $Y SKIPPING $N"
+fi
 
-mkdir -p /app
-VALIDATE $? "creating app directory"
+mkdir -p /app 
+VALIDATE $? "Creating app directory"
 
-curl -L -o /tmp/payment.zip https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip &>>$LOG_FILE
+curl -o /tmp/payment.zip https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip &>>$LOG_FILE
 VALIDATE $? "Downloading payment"
 
 rm -rf /app/*
 cd /app 
 unzip /tmp/payment.zip &>>$LOG_FILE
-VALIDATE $? "Unzipping the payment"
+VALIDATE $? "unzipping payment"
 
 pip3 install -r requirements.txt &>>$LOG_FILE
 VALIDATE $? "Installing dependencies"
 
-cp $SCRIPT_DIR/payment.service /etc/systemd/system/payment.service
-VALIDATE $? "Copying payment services"
+cp $SCRIPT_DIR/payment.service /etc/systemd/system/payment.service &>>$LOG_FILE
+VALIDATE $? "Copying payment service"
 
 systemctl daemon-reload &>>$LOG_FILE
-VALIDATE $? "Daemon reloading"
+VALIDATE $? "Daemon Reload"
 
 systemctl enable payment &>>$LOG_FILE
-VALIDATE $? "Enabling payment"
+VALIDATE $? "Enable payment"
 
 systemctl start payment &>>$LOG_FILE
 VALIDATE $? "Starting payment"
 
 END_TIME=$(date +%s)
+TOTAL_TIME=$(( $END_TIME - $START_TIME ))
 
-TOTAL_TIME=$(($END_TIME - $START_TIME))
-echo -e "Script execution completed successfully, $Y time taken : $TOTAL_TIME seconds $N" | tee -a $LOG_FILE
+echo -e "Script exection completed successfully, $Y time taken: $TOTAL_TIME seconds $N" | tee -a $LOG_FILE
