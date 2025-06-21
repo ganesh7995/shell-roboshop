@@ -98,4 +98,5 @@ VALIDATE $? "Restarting the shipping"
 END_TIME=$(date +%s)
 
 TOTAL_TIME=$(($END_TIME - $START_TIME))
+
 echo -e "Script exection completed successfully... $Y Time taken in : $TOTAL_TIME seconds $N" | tee -a $LOG_FILE
