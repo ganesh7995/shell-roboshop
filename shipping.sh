@@ -58,7 +58,7 @@ VALIDATE $? "Downloading Shipping"
 
 rm -rf /app/*
 cd /app 
-unzip /tmp/shipping.zip &>>$LOG_FILE
+unzip /tmp/shipping.zip 
 VALIDATE $? "Unzipping shipping"
 
 mvn clean package 
@@ -69,6 +69,8 @@ VALIDATE $? "mooving and remnaming the content"
 
 systemctl daemon-reload &>>$LOG_FILE
 VALIDATE $? "Daemon reload"
+
+cp $SCRIPT_DIR/shipping.service /etc/systemd/system/shipping.service
 
 systemctl enable shipping &>>$LOG_FILE
 VALIDATE $? "enavling Shipping"
