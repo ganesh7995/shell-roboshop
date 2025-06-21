@@ -91,6 +91,7 @@ then
     VALIDATE $? "Data loading into Mysql"
 else
     echo -e "data already loaded... $Y SKIPPING $N"
+fi
 
 systemctl restart shipping &>>$LOG_FILE
 VALIDATE $? "Restarting the shipping"
