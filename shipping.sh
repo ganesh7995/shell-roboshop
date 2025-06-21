@@ -53,7 +53,7 @@ fi
 mkdir -p /app
 VALIDATE $? "Creating App Directory"
 
-curl -L -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip 
+curl -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip 
 VALIDATE $? "Downloading Shipping"
 
 rm -rf /app/*
