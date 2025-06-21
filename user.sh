@@ -67,10 +67,11 @@ VALIDATE $? "Unzipping user"
 npm install &>>$LOG_FILE
 VALIDATE $? "Installing npm"
 
+cp $SCRIPT_DIR/user.service /etc/systemd/system/user.service
+VALIDATE $? "Copying user services"
+
 systemctl daemon-reload &>>$LOG_FILE
-
 systemctl enable user &>>$LOG_FILE
-
 systemctl start user &>>$LOG_FILE
 VALIDATE $? "Starting user"
 
