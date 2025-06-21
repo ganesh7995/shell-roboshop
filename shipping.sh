@@ -50,7 +50,7 @@ else
 
 fi
 
-mkdir -p /app $>>$LOG_FILE
+mkdir -p /app
 VALIDATE $? "Creating App Directory"
 
 curl -L -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip 
@@ -80,13 +80,14 @@ VALIDATE $? "stating shipping"
 dnf install mysql -y &>>$LOG_FILE
 VALIDATE $? "Installing mysql"
 
-mysql -h mysql.gana84s.site -u root $MYSQL_ROOT_PASSWORD -e 'use cties'
+mysql -h mysql.gana84s.site -u root p$MYSQL_ROOT_PASSWORD -e 'use cties' &>>$LOG_FILE
 
 if [ $? -ne 0 ]
 then
-    mysql -h mysql.gana84s.site -uroot $MYSQL_ROOT_PASSWORD < /app/db/schema.sql
-    mysql -h mysql.gana84s.site -uroot $MYSQL_ROOT_PASSWORD < /app/db/app-user.sql 
-    mysql -h mysql.gana84s.site -uroot $MYSQL_ROOT_PASSWORD < /app/db/master-data.sql
+    mysql -h mysql.gana84s.site -uroot p$MYSQL_ROOT_PASSWORD < /app/db/schema.sql
+    mysql -h mysql.gana84s.site -uroot p$MYSQL_ROOT_PASSWORD < /app/db/app-user.sql 
+    mysql -h mysql.gana84s.site -uroot p$MYSQL_ROOT_PASSWORD < /app/db/master-data.sql
+    VALIDATE $? "Data loading into Mysql"
 else
     echo -e "data already loaded... $Y SKIPPING $N"
 
