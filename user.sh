@@ -75,7 +75,7 @@ systemctl enable user &>>$LOG_FILE
 systemctl start user &>>$LOG_FILE
 VALIDATE $? "Starting user"
 
-END_TIME=$(date+%S)
+END_TIME=$(date +%S)
 
 TOTAL_TIME=$(($END_TIME - $START_TIME))
 
