@@ -34,7 +34,7 @@ VALIDATE(){
     fi
 }
 
-dnf install python3 gcc python3-devel -y
+dnf install python3 gcc python3-devel -y &>>$LOG_FILE
 VALIDATE $? "Installing Python3"
 
 id roboshop &>>$LOG_FILE
@@ -45,7 +45,7 @@ then
 else
     echo -e "User already exist $Y SKIPPING $N"
 
-mkdir -p /app &>>$LOG_FILE
+mkdir -p /app
 VALIDATE $? "creating app directory"
 
 curl -L -o /tmp/payment.zip https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip &>>$LOG_FILE
@@ -60,6 +60,7 @@ pip3 install -r requirements.txt &>>$LOG_FILE
 VALIDATE $? "Installing dependencies"
 
 cp $SCRIPT_DIR/payment.service /etc/systemd/system/payment.service
+VALIDATE $? "Copying payment services"
 
 systemctl daemon-reload &>>$LOG_FILE
 VALIDATE $? "Daemon reloading"
