@@ -50,10 +50,10 @@ else
 
 fi
 
-mkdir -p /app
+mkdir -p /app &>>$LOG_FILE
 VALIDATE $? "Creating App Directory"
 
-curl -L -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip 
+curl -L -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip &>>$LOG_FILE
 VALIDATE $? "Downloading Shipping"
 
 rm -rf /app/*
@@ -98,5 +98,4 @@ VALIDATE $? "Restarting the shipping"
 END_TIME=$(date +%s)
 
 TOTAL_TIME=$(($END_TIME - $START_TIME))
-
 echo -e "Script exection completed successfully... $Y Time taken in : $TOTAL_TIME seconds $N" | tee -a $LOG_FILE
